@@ -1,6 +1,7 @@
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,13 +45,21 @@ public class ConvertJsonToCSV {
             JSONObject person = (JSONObject) o;
 
             shema.setId((Long) person.get("id"));
-            System.out.println(shema.getId());
+       //     System.out.println(shema.getId());
 
             shema.setTitle((String) person.get("title"));
-            System.out.println(shema.getTitle());
+         //   System.out.println(shema.getTitle());
 
             shema.setUpdate_At((String) person.get("updated_at"));
-            System.out.println(shema.getUpdate_At());
+           // System.out.println(shema.getUpdate_At());
+
+
+            List<List<String>> rows = Arrays.asList(
+                    Arrays.asList (String.valueOf(shema.getId()), shema.getTitle(), shema.getUpdate_At())
+
+
+            );
+            System.out.println(rows);
 
 
 
@@ -87,7 +96,7 @@ public class ConvertJsonToCSV {
                 row = sheet.createRow(rownum);
 
                 cell = row.createCell(0, CellType.STRING);
-                cell.setCellValue((Long) person.get("id"));
+                cell.setCellValue(String.valueOf(rows));
 
                 cell = row.createCell(1, CellType.STRING);
                 cell.setCellValue(shema.getUpdate_At());
@@ -107,7 +116,7 @@ public class ConvertJsonToCSV {
 
     }
 
-        }
+}
 
 
 
