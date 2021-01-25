@@ -1,12 +1,15 @@
 
 import java.io.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Iterator;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,21 +29,25 @@ public class ConvertJsonToCSV {
     }
 
     public static void main(String[] args) throws IOException, ParseException {
+        BufferedReader reader = Files.newBufferedReader(Paths.get("C:\\WorkSpaceSm-Soft\\SYKABLYAT\\SomeExample\\src\\main\\java\\json\\Stats.json"));
+
+        Object obj = new JSONParser().parse(reader);
+
+
+
 
         JSONParser parser = new JSONParser();
 
-        JSONArray a = (JSONArray) parser.parse(new FileReader("C:\\WorkSpaceSm-Soft\\SYKABLYAT\\SomeExample\\src\\main\\java\\json\\Stats.json"));
-
-
-     //   JSONObject jsonObject = (JSONObject) a;
+        JSONArray a = (JSONArray) obj;
 
 
 
 
-        Shema shema = new Shema();
 
 
-      //  DeseralizetPOJO deseralizetPOJO;
+
+
+
 
 
         Cell cell;
@@ -77,11 +84,20 @@ public class ConvertJsonToCSV {
 
 
         for (int i=0; i<a.size(); i++) {
+
+
+            JSONObject jo = (JSONObject) ((JSONArray) obj).get(i);
+
+            JSONObject authorName = (JSONObject) jo.get("author");
+
+            Object test = authorName.get("name");
+
+
+            System.out.println(test);
+
+
             JSONObject stats = (JSONObject) a.get(i);
 
-        //   JSONArray sometest = (JSONArray) a.get("closed_by");
-
-           // JSONArray authorName = (JSONArray) stats.get("closed_by");
 
 
             Row someRow = someStats.createRow(i + 1);
@@ -93,8 +109,8 @@ public class ConvertJsonToCSV {
             someRow.createCell(0).setCellValue((Long) stats.get("id"));
             someRow.createCell(1).setCellValue((String) stats.get("title"));
             someRow.createCell(2).setCellValue((String) stats.get("updated_at"));
-            someRow.createCell(4).setCellValue((String) stats.get("name"));
-            //someRow.createCell(0).setCellValue("");
+            someRow.createCell(3).setCellValue( (String) authorName.get("name") ) ;
+
 
 
 
@@ -102,11 +118,15 @@ public class ConvertJsonToCSV {
 
 
         }
+
         File file = new File("C:/demo/Stats.xls");
         file.getParentFile().mkdirs();
 
         FileOutputStream outFile = new FileOutputStream(file);
         workbook.write(outFile);
+
+
+
         System.out.println("Created file: " + file.getAbsolutePath());
 
     }
